@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delivery Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --danger: #e63946;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fb;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .header-left h1 {
+            color: var(--primary);
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .delivery-man {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .delivery-man img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 24px;
+        }
+
+        .pending .stat-icon {
+            background-color: rgba(247, 37, 133, 0.15);
+            color: var(--warning);
+        }
+
+        .picked-up .stat-icon {
+            background-color: rgba(255, 165, 0, 0.15);
+            color: orange;
+        }
+
+        .delivered .stat-icon {
+            background-color: rgba(76, 201, 240, 0.15);
+            color: var(--success);
+        }
+
+        .stat-info h3 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .stat-info p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: var(--primary);
+        }
+
+        th {
+            padding: 15px 20px;
+            text-align: left;
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--light-gray);
+            transition: background-color 0.2s;
+        }
+
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        td {
+            padding: 15px 20px;
+            font-size: 14px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background-color: rgba(247, 37, 133, 0.1);
+            color: var(--warning);
+        }
+
+        .status-picked {
+            background-color: rgba(255, 165, 0, 0.1);
+            color: orange;
+        }
+
+        .status-delivered {
+            background-color: rgba(76, 201, 240, 0.1);
+            color: var(--success);
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .pickup {
+            background-color: orange;
+            color: white;
+        }
+
+        .pickup:hover:not(:disabled) {
+            background-color: darkorange;
+        }
+
+        .delivered {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .delivered:hover {
+            background-color: #3bb4d8;
+        }
+
+        .delete {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .delete:hover {
+            background-color: #c82333;
+        }
+
+        @media (max-width: 992px) {
+            table {
+                min-width: 900px;
+            }
+
+            .stats-cards {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-right {
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>Delivery Dashboard</h1>
+                <p>Manage and track your deliveries</p>
+            </div>
+            <div class="header-right">
+                <div class="delivery-man">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80"
+                        alt="Delivery Man">
+                    <div>
+                        <strong> MAM GEETA joshi </strong>
+                        <div>Delivery Partner</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="stats-cards">
+            <div class="stat-card pending">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="pending-count">0</h3>
+                    <p>Pending Deliveries</p>
+                </div>
+            </div>
+
+            <div class="stat-card picked-up">
+                <div class="stat-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="picked-up-count">0</h3>
+                    <p>Picked Up</p>
+                </div>
+            </div>
+
+            <div class="stat-card delivered">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="delivered-count">0</h3>
+                    <p>Delivered</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Pickup</th>
+                        <th>Drop</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="bookings-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        async function fetchBookings() {
+            try {
+                const res = await fetch('http://localhost:5000/get-bookings');
+                if (!res.ok) throw new Error('Network response was not ok');
+                const bookings = await res.json();
+
+                const tbody = document.getElementById('bookings-body');
+                tbody.innerHTML = '';
+
+                // Reset counters
+                let pendingCount = 0;
+                let pickedUpCount = 0;
+                let deliveredCount = 0;
+
+                bookings.forEach(booking => {
+                    const isDelivered = booking.status === 'Delivered';
+                    const isPickedUp = booking.status === 'Picked Up';
+
+                    // Update counters
+                    if (isDelivered) deliveredCount++;
+                    else if (isPickedUp) pickedUpCount++;
+                    else pendingCount++;
+
+                    const row = document.createElement('tr');
+
+                    // Determine status class
+                    let statusClass = 'status-pending';
+                    if (booking.status === 'Picked Up') statusClass = 'status-picked';
+                    if (booking.status === 'Delivered') statusClass = 'status-delivered';
+
+                    row.innerHTML = `
+                        <td>${booking._id}</td>
+                        <td><strong>${booking.name}</strong></td>
+                        <td>${booking.phone}</td>
+                        <td>${booking.pickup}</td>
+                        <td>${booking.drop}</td>
+                        <td>${new Date(booking.date).toLocaleDateString()}</td>
+                        <td><span class="status ${statusClass}">${booking.status || 'Pending'}</span></td>
+                        <td class="actions">
+                            <button class="pickup" ${isDelivered ? 'disabled' : ''} onclick="markStatus('${booking._id}', 'Picked Up')">
+                                <i class="fas fa-box-open"></i> Pick Up
+                            </button>
+                            <button class="delivered" onclick="markStatus('${booking._id}', 'Delivered')">
+                                <i class="fas fa-check"></i> Deliver
+                            </button>
+                            <button class="delete" onclick="deleteBooking('${booking._id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                // Update counters in the UI
+                document.getElementById('pending-count').textContent = pendingCount;
+                document.getElementById('picked-up-count').textContent = pickedUpCount;
+                document.getElementById('delivered-count').textContent = deliveredCount;
+
+            } catch (error) {
+                console.error(error);
+                alert('Error loading bookings: ' + error.message);
+            }
+        }
+
+        async function markStatus(id, status) {
+            try {
+                const res = await fetch(`http://localhost:5000/update-booking/${id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+                if (!res.ok) throw new Error('Network response was not ok');
+                const data = await res.json();
+
+                // Show success notification
+                showNotification(`Status updated to ${status} successfully!`, 'success');
+                fetchBookings();
+            } catch (error) {
+                console.error(error);
+                showNotification('Error updating status: ' + error.message, 'error');
+            }
+        }
+
+        async function deleteBooking(id) {
+            if (!confirm('Are you sure you want to delete this booking? This action cannot be undone.')) return;
+
+            try {
+                const res = await fetch(`http://localhost:5000/delete-booking/${id}`, {
+                    method: 'DELETE'
+                });
+                if (!res.ok) throw new Error('Network response was not ok');
+                const data = await res.json();
+
+                showNotification('Booking deleted successfully!', 'success');
+                fetchBookings();
+            } catch (error) {
+                console.error(error);
+                showNotification('Error deleting booking: ' + error.message, 'error');
+            }
+        }
+
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.padding = '12px 20px';
+            notification.style.borderRadius = '6px';
+            notification.style.color = 'white';
+            notification.style.fontWeight = '500';
+            notification.style.zIndex = '1000';
+            notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateX(100px)';
+            notification.style.transition = 'all 0.3s ease';
+
+            if (type === 'success') {
+                notification.style.background = '#4cc9f0';
+            } else {
+                notification.style.background = '#e63946';
+            }
+
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateX(0)';
+            }, 10);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100px)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Initial fetch
+        fetchBookings();
+    </script>
+</body>
+
+</html>

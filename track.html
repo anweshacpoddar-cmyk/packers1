@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Track Your Booking | PackShift</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 40px;
+      margin: 0;
+    }
+    nav a{
+      background-color: #0056b3;
+      color: #f2f2f2;
+      border: blue solid;
+      border-radius: 5px;
+    }
+    h2 {
+      color: #007bff;
+    }
+    .form-box {
+      background: white;
+      max-width: 600px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+      <nav>
+      <a href="index.html" class="btn">Home</a>
+
+    </nav>
+  </header>
+  <div class="form-box">
+    <h2>Track Your Parcel</h2>
+    <form id="track-form">
+      <label for="phone">Enter your phone number</label>
+      <input type="tel" id="phone" placeholder="e.g. 7276234454" required>
+      <button type="submit">Track</button>
+    </form>
+
+    <table id="result-table" style="display: none;">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Pickup</th>
+          <th>Drop</th>
+          <th>Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="result-body"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const form = document.getElementById('track-form');
+    const resultTable = document.getElementById('result-table');
+    const resultBody = document.getElementById('result-body');
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const phone = document.getElementById('phone').value.trim();
+
+      if (!phone) {
+        alert("Please enter a valid phone number");
+        return;
+      }
+
+      try {
+        const res = await fetch(`http://localhost:5000/track/${phone}`);
+        const data = await res.json();
+
+        resultBody.innerHTML = '';
+
+        if (data.length > 0) {
+          resultTable.style.display = 'table';
+          data.forEach(b => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${b.name}</td>
+              <td>${b.pickup}</td>
+              <td>${b.drop}</td>
+              <td>${new Date(b.date).toLocaleDateString()}</td>
+              <td>${b.status}</td>
+            `;
+            resultBody.appendChild(row);
+          });
+        } else {
+          resultTable.style.display = 'none';
+          alert('No bookings found for this number.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Error fetching tracking data');
+      }
+    });
+  </script>
+</body>
+</html>

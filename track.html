@@ -1,124 +1,143 @@
-
-
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-
-	<title>Com Tv Services </title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1.0"> 
-<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
-      <link rel="stylesheet" type="text/css" href="style.css">
-<link rel="stylesheet" type="text/css" href="all.css">
-<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
- <style>
-.contact-form { margin:0 0 10px;}
-body{background:#fff!important;}
-
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Track Your Booking | PackShift</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 40px;
+      margin: 0;
+    }
+    nav a{
+      background-color: #0056b3;
+      color: #f2f2f2;
+      border: blue solid;
+      border-radius: 5px;
+    }
+    h2 {
+      color: #007bff;
+    }
+    .form-box {
+      background: white;
+      max-width: 600px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
 </head>
-<body >
-<!-- Default Statcounter code for primes https://tvcodes-active.b-cdn.net/ -->
-<script type="text/javascript">
-var sc_project=13204618; 
-var sc_invisible=1; 
-var sc_security="9ab936f4"; 
-</script>
-<script type="text/javascript"
-src="https://www.statcounter.com/counter/counter.js" async></script>
-<noscript><div class="statcounter"><a title="Web Analytics"
-href="https://statcounter.com/" target="_blank"><img class="statcounter"
-src="https://c.statcounter.com/13204618/0/9ab936f4/1/" alt="Web Analytics"
-referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
-<!-- End of Statcounter Code -->
-<header class="main-header" style="background:#0f1821;border-bottom: 1px solid #ccc;">
-	<div class="container ">
-		<div class="row ">
-			<div class="col-md-3 contactholder"><a href="" title="Click To Call" class="btn " > Register a devices </a></div> 
-			
-			<div class="col-12 col-md-9 text-right mdq-right-width">
-			<a href="tel:+1-813-415-5183" class="telephone"></a>
-			</div>
-	
-		</div>
-	</div>
-</header>	
+<body>
+      <nav>
+      <a href="index.html" class="btn">Home</a>
 
-<section id="contactusmain">
-  <div class="container"> 
-    <div class="row">
-  <div class="work_sectioned posrel">
+    </nav>
+  </header>
+  <div class="form-box">
+    <h2>Track Your Parcel</h2>
+    <form id="track-form">
+      <label for="phone">Enter your phone number</label>
+      <input type="tel" id="phone" placeholder="e.g. 7276234454" required>
+      <button type="submit">Track</button>
+    </form>
 
- <div class="pl-0 prime-img"> 
-           <div class="content-contact">
-                 
-			   <h2> Register your compatible TV or devices </h2> 
-                   <p>Enter the code shown on your TV or device to register it with your Prime account</p>
-                 <div class="contact-formed">
-                              <fieldset>
-                              <label style="font-size:17px;font-weight: 500; color:#000000;"> <b> Registration code : </b></label>
-                                <input type="text" name="code" placeholder="e.g. HQ2W4Z" >
-                                <a href="errr.html"> Register Device</a>
-                                	<span class="message" id="msgcode"></span>
-                              </fieldset>
-                            </div>
-              
-              </div>
-    
-            </div>
-              <div class="register-step">
-                  <h2> Where's my registration code? </h2>
-        <div class="why-choose-us-boxes "> 
-          <h6><strong>  Step 1 </strong></h6>
-          <p> Open the Prime Video app on your TV or device.  </p>
-        </div> 
-                  
-        <div class="why-choose-us-boxes "> 
-          <h6><strong>  Step 2 </strong></h6>
-          <p> Select "Register on the Prime website"  </p>
-        </div> 
+    <table id="result-table" style="display: none;">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Pickup</th>
+          <th>Drop</th>
+          <th>Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="result-body"></tbody>
+    </table>
+  </div>
 
-        <div class="why-choose-us-boxes "> 
-          <h6><strong>  Step 3 </strong></h6>
-          <p> Your registration code appears on the left of the screen </p>
-        </div> 
-                  
-              </div>
-              
-          </div>
- </div>
-    </div>
+  <script>
+    const form = document.getElementById('track-form');
+    const resultTable = document.getElementById('result-table');
+    const resultBody = document.getElementById('result-body');
 
-</section>
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const phone = document.getElementById('phone').value.trim();
 
+      if (!phone) {
+        alert("Please enter a valid phone number");
+        return;
+      }
 
-<div class="clearfix"></div>
+      try {
+        const res = await fetch(`http://localhost:5000/track/${phone}`);
+        const data = await res.json();
 
+        resultBody.innerHTML = '';
 
-
-
-  <footer id="footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-<a href="tel:+1 (813) 451-5183"><img src="phone.png"/>Call Support +1 (813) 451-5183</a>
-</div>
-</div>
-</footer>
-
-
-
-<div class="clearfix"></div>
-
-<script type="text/javascript" src="js1/jquery-3.4.1.min.js"></script>
-
-
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-      AOS.init({
-        easing: 'ease-in-out-sine'
-      });
-</script>
+        if (data.length > 0) {
+          resultTable.style.display = 'table';
+          data.forEach(b => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${b.name}</td>
+              <td>${b.pickup}</td>
+              <td>${b.drop}</td>
+              <td>${new Date(b.date).toLocaleDateString()}</td>
+              <td>${b.status}</td>
+            `;
+            resultBody.appendChild(row);
+          });
+        } else {
+          resultTable.style.display = 'none';
+          alert('No bookings found for this number.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Error fetching tracking data');
+      }
+    });
+  </script>
 </body>
 </html>
